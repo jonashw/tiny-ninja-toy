@@ -13,4 +13,7 @@ export class CircularArray<T> {
   get current() {
     return this.items[this.i];
   }
+  get currentIndex() {
+    return this.i;
+  }
 }
