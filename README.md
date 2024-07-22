@@ -4,7 +4,7 @@
 |<img src="public/ninja.01-filled-transparent.png" width="50"> |<img src="public/ninja.01-filled-transparent.png" width="50"> |<img src="public/ninja.01-filled-transparent.png" width="50"> |<img src="public/ninja.01-filled-transparent.png" width="50"> |<img src="public/ninja.01-filled-transparent.png" width="50"> |<img src="public/ninja.01-filled-transparent.png" width="50"> |<img src="public/ninja.01-filled-transparent.png" width="50">|
 
 
-[Play now](https://tnt.jonashw.dev)
+[Play now](https://ninjas.jonashw.dev)
 
 ## Dependencies
 

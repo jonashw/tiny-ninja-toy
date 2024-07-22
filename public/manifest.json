@@ -1,6 +1,7 @@
 {
     "name": "Tiny Ninja Toy",
-    "short_name": "TNT",
+    "short_name": "Ninjas",
+    "start_url":"/",
     "icons": [
         {
             "src": "/android-chrome-192x192.png",
