@@ -4,13 +4,15 @@ import { Sketch02 } from './sketches/Sketch02';
 import { Sketch03 } from './sketches/Sketch03';
 import { Sketch04 } from './sketches/Sketch04';
 import { CircularArray } from './CircularArray';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Sketch05 } from './sketches/Sketch05';
 
 const allSketches = [
   Sketch01,
   Sketch02,
   Sketch03,
   Sketch04,
+  Sketch05,
 ];
 
 function Button({
@@ -28,17 +30,23 @@ function Button({
 
 export default function Sketches() {
   const params = useParams();
+  const navigate = useNavigate();
   const defaultIndex = 
     'sketchIndex' in params ? parseInt(params.sketchIndex ?? "") ?? 0
     : 0;
   const [sketches,setSketches] = React.useState(new CircularArray(allSketches, defaultIndex));
   const CurrentSketch = sketches.current;
+
+  function go(s: CircularArray<() => JSX.Element>){
+    setSketches(s);
+    navigate(`/sketches/${s.currentIndex}`);
+  }
   return (
     <div>
       <div className="flex justify-between items-center p-2 gap-2 [&>button]:flex-grow">
-        <Button onClick={() => setSketches(sketches.prev())}>Prev</Button>
+        <Button onClick={() => go(sketches.prev())}>Prev</Button>
         <span>{sketches.currentIndex + 1} of {sketches.items.length}</span>
-        <Button onClick={() => setSketches(sketches.next())}>Next</Button>
+        <Button onClick={() => go(sketches.next())}>Next</Button>
       </div>
       <CurrentSketch/>
     </div>
