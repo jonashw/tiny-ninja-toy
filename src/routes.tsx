@@ -8,7 +8,7 @@ export const routes: RouteObject[] = [
     element: <App/>
   },
   {
-    path:'/sketches',
+    path:'/sketches/:sketchIndex?',
     element: <Sketches/>
   }
 ];

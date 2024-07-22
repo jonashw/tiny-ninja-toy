@@ -2,12 +2,15 @@ import React from 'react';
 import { Sketch01 } from './sketches/Sketch01';
 import { Sketch02 } from './sketches/Sketch02';
 import { Sketch03 } from './sketches/Sketch03';
+import { Sketch04 } from './sketches/Sketch04';
 import { CircularArray } from './CircularArray';
+import { useParams } from 'react-router-dom';
 
 const allSketches = [
   Sketch01,
   Sketch02,
-  Sketch03
+  Sketch03,
+  Sketch04,
 ];
 
 function Button({
@@ -24,7 +27,11 @@ function Button({
 }
 
 export default function Sketches() {
-  const [sketches,setSketches] = React.useState(new CircularArray(allSketches));
+  const params = useParams();
+  const defaultIndex = 
+    'sketchIndex' in params ? parseInt(params.sketchIndex ?? "") ?? 0
+    : 0;
+  const [sketches,setSketches] = React.useState(new CircularArray(allSketches, defaultIndex));
   const CurrentSketch = sketches.current;
   return (
     <div>
