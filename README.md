@@ -1,18 +1,12 @@
 # Tiny Ninja Toy (TNT)
 
-<img src="public/ninja.01-filled-transparent.png" width="70">
-<img src="public/ninja.01-filled-transparent.png" width="70">
-<img src="public/ninja.01-filled-transparent.png" width="70">
-<img src="public/ninja.01-filled-transparent.png" width="70">
-<img src="public/ninja.01-filled-transparent.png" width="70">
+||||||
+|--|--|--|--|--|
+|<img src="public/ninja.01-filled-transparent.png" width="70">|<img src="public/ninja.01-filled-transparent.png" width="70">| <img src="public/ninja.01-filled-transparent.png" width="70">| <img src="public/ninja.01-filled-transparent.png" width="70">| <img src="public/ninja.01-filled-transparent.png" width="70">|
 
-<img src="public/ninja.01-filled-transparent.png" width="50">
-<img src="public/ninja.01-filled-transparent.png" width="50">
-<img src="public/ninja.01-filled-transparent.png" width="50">
-<img src="public/ninja.01-filled-transparent.png" width="50">
-<img src="public/ninja.01-filled-transparent.png" width="50">
-<img src="public/ninja.01-filled-transparent.png" width="50">
-<img src="public/ninja.01-filled-transparent.png" width="50">
+||||||||
+|--|--|--|--|--|--|--|
+|<img src="public/ninja.01-filled-transparent.png" width="50"> |<img src="public/ninja.01-filled-transparent.png" width="50"> |<img src="public/ninja.01-filled-transparent.png" width="50"> |<img src="public/ninja.01-filled-transparent.png" width="50"> |<img src="public/ninja.01-filled-transparent.png" width="50"> |<img src="public/ninja.01-filled-transparent.png" width="50"> |<img src="public/ninja.01-filled-transparent.png" width="50">|
 
 
 [Play now](https://tnt.jonashw.dev)
