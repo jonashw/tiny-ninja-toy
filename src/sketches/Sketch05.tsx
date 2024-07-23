@@ -60,8 +60,8 @@ function mouseEventToWorldSpace(
   //adapted from: https://stackoverflow.com/a/13091694
 
   const vector = new Vector3(
-    e.clientX / canvas.width * 2 - 1,
-    -e.clientY / canvas.height * 2 + 1,
+      (e.clientX / canvas.clientWidth ) * 2 - 1,
+    -((e.clientY / canvas.clientHeight) * 2 - 1),
     0.5);
   vector.unproject(camera);
   vector.sub(camera.position).normalize();
