@@ -11,7 +11,7 @@ export function Ninja(props: any) {
     args: [s/2,10]
 
   }))
-  const texture = useLoader(TextureLoader,'/ninja.01-filled-transparent.png');
+  const texture = useLoader(TextureLoader,'/ninja.01-filled-transparent-square.png');
   return (
     <mesh
       ref={ref as any}
