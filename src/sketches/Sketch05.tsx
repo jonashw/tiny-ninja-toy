@@ -7,7 +7,7 @@ import { ColoredNinja, NinjaDeclaration } from '../entities/Ninja';
 import { Trampoline } from '../entities/Trampoline';
 import { Floor } from '../entities/Floor';
 
-const z = 0;
+const z = 2;
 const starterNinjas: NinjaDeclaration[] = [
   { position: [-1, 1.5, z], color: 'pink' },
   { position: [0, 1, z], color: 'teal' , scale: 1.3},
@@ -101,7 +101,7 @@ export function Sketch05(){
     return () => {
       document.removeEventListener('keypress',listener);
     };
-  },[orthographic]);
+  },[orthographic, debug, environment]);
 
 
   const scene = (
@@ -112,7 +112,7 @@ export function Sketch05(){
         )}
       </group>
       <Trampoline position={[0, 0, 0]} />
-      <Floor position={[0, -1, 0]} />
+      <Floor position={[0, -0.8, 0]} />
     </group>
   );
 
@@ -173,7 +173,7 @@ export function Sketch05(){
     >
       {camera}
       {environment && <Environment preset="park" background={true} />}
-      <directionalLight color={"white"} position={[0,20,0]} />
+      <directionalLight color={"white"} position={[0,15,10]} castShadow />
       <pointLight position={[0,10,5]} intensity={.5}/>
 
       <Physics>
