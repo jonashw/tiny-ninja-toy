@@ -2,7 +2,7 @@ import { Canvas } from '@react-three/fiber'
 import {  Debug, Physics, Triplet } from '@react-three/cannon'
 import { Environment, OrthographicCamera, PerspectiveCamera } from '@react-three/drei'
 import { Camera,  Vector3 } from 'three'
-import React, { createRef, useRef } from 'react';
+import React, { createRef, useRef, useState } from 'react';
 import { Ninja } from '../entities/Ninja';
 import { Trampoline } from '../entities/Trampoline';
 
@@ -37,11 +37,15 @@ export function Sketch05(){
   const cameraRef = useRef<Camera>(null);
   const canvasRef = createRef<HTMLCanvasElement>();
   const [orthographic,setOrthographic] = React.useState(false);
-  const debug = false;
+  const [debug,setDebug] = useState(false);
 
   React.useEffect(() => {
     const listener = (e: KeyboardEvent) => {
       switch(e.key.toLowerCase()){
+        case "d": {
+          setDebug(!debug);
+          break;
+        }
         case "c": {
           setOrthographic(!orthographic);
           break;
@@ -113,7 +117,7 @@ export function Sketch05(){
 
         const position = mouseEventToWorldSpace(canvas, camera, e, z);
         setExtraNinjas([...extraNinjas, [position.x, position.y, position.z]]);
-        console.log({camera,position});
+        //console.log({camera,position});
       }}
     >
       {camera}
