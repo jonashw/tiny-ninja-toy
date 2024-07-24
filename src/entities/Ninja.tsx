@@ -38,8 +38,7 @@ export function Ninja(props: any) {
 export function ColoredNinja({
   ninja
 }:{
-  ninja: NinjaDeclaration
-}) {
+  ninja: NinjaDeclaration}) {
   const {position,color,scale} = ninja;
   //console.log(ninja);
   const s = 0.5 * (scale ?? 1);
@@ -47,6 +46,7 @@ export function ColoredNinja({
   const [ref] = useSphere(() => ({
     mass: 1, 
     position,
+    angularDamping: 0.9,
     velocity: ninja.velocity,
     material: {restitution:1},
     args: [s/2] as SphereArgs

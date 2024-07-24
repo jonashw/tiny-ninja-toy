@@ -1,10 +1,10 @@
 import { useCylinder } from "@react-three/cannon";
-import { Edges } from "@react-three/drei";
+import { Edges, Outlines } from "@react-three/drei";
 import { useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three";
 
 export function Trampoline(props: any) {
-  const r = 5;
+  const r = 3;
   const r_leg = 0.02;
   const surfaceThickness = 0.05;
   const legCount = 100;
@@ -17,11 +17,14 @@ export function Trampoline(props: any) {
     ...props,
     type:'Kinematic',
     args
-  }))
+  }));
+
+  const outlineThickness = 0.005;
   
   return <>
     <mesh ref={ref as any} receiveShadow castShadow>
-      <Edges linewidth={2} threshold={15} color={"black"} />
+      <Outlines thickness={outlineThickness}/>
+      <Edges color="black"/>
       <meshStandardMaterial  map={texture}/>
       <cylinderGeometry args={args} />
     </mesh>
@@ -35,6 +38,7 @@ export function Trampoline(props: any) {
             r - r_leg
           ]}
         >
+          <Outlines thickness={outlineThickness}/>
           <meshStandardMaterial color={"#666666"}/>
           <cylinderGeometry args={legArgs} />
         </mesh>

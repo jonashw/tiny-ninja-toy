@@ -1,10 +1,11 @@
 import { Canvas } from '@react-three/fiber'
 import {  Debug, Physics, Triplet } from '@react-three/cannon'
 import { Environment, OrthographicCamera, PerspectiveCamera } from '@react-three/drei'
-import { Camera,  Vector3 } from 'three'
+import { PerspectiveCamera as PerspectiveCameraImpl , Camera,  Group,  Vector3, Box3 } from 'three'
 import React, { createRef, useRef, useState } from 'react';
 import { ColoredNinja, NinjaDeclaration } from '../entities/Ninja';
 import { Trampoline } from '../entities/Trampoline';
+import { Floor } from '../entities/Floor';
 
 const z = 0;
 const starterNinjas: NinjaDeclaration[] = [
@@ -14,6 +15,24 @@ const starterNinjas: NinjaDeclaration[] = [
   { position: [2, 1.5, z], color: 'blue', velocity: [-0.1, 0, 0] },
   { position: [1, 1.5, z], color: 'red', scale: 1.6},
 ];
+
+function fitCameraToObjects( group:Group, camera:PerspectiveCameraImpl, margin: number = 1.2) {
+  const box = new Box3().setFromObject( group );
+  const size = box.getSize( new Vector3() );
+  const center = box.getCenter( new Vector3() );
+  const maxSize = Math.max( size.x, size.y );
+  const fitHeightDistance = maxSize / ( 2 * Math.atan( ( Math.PI * camera.fov) / 360 ) );
+  const fitWidthDistance = fitHeightDistance / camera.aspect;
+  const distance = margin * Math.max( fitHeightDistance, fitWidthDistance );
+
+  //const currentCameraPos = new Vector3().copy( camera.position )
+  const direction = center.clone().sub( camera.position ).normalize().multiplyScalar( distance )
+
+  const goalCameraPos = new Vector3().copy( center ).sub( direction )
+  const goalFocusVec = new Vector3().copy( center );
+  camera.position.copy( goalCameraPos )
+  camera.lookAt( goalFocusVec )
+}
 
 function mouseEventToWorldSpace(
   canvas: HTMLCanvasElement,
@@ -36,11 +55,14 @@ function mouseEventToWorldSpace(
   const position = new Vector3();
   position.copy(camera.position).add(vector.multiplyScalar(distance));
   return position;
+
 }
 
 export function Sketch05(){
   const [extraNinjas,setExtraNinjas] = React.useState<NinjaDeclaration[]>(starterNinjas);
-  const cameraRef = useRef<Camera>(null);
+  const cameraRef = useRef<PerspectiveCameraImpl | Camera>(null);
+  const sceneGroupRef = useRef<Group>(null);
+  const ninjaGroupRef = useRef<Group>(null);
   const canvasRef = createRef<HTMLCanvasElement>();
   const [orthographic,setOrthographic] = React.useState(false);
   const [debug,setDebug] = useState(false);
@@ -51,6 +73,18 @@ export function Sketch05(){
       switch(e.key.toLowerCase()){
         case "d": {
           setDebug(!debug);
+          break;
+        }
+        case "f": {
+          if(!cameraRef.current || !sceneGroupRef.current || !ninjaGroupRef.current){
+            console.log('cannot fit because camera/scene is not ready yet');
+            return;
+          }
+          if(!('fov' in cameraRef.current)){
+            console.log('can only fit for perspective cameras');
+            return;
+          }
+          fitCameraToObjects(ninjaGroupRef.current, cameraRef.current, 0.5);
           break;
         }
         case "e": {
@@ -71,12 +105,15 @@ export function Sketch05(){
 
 
   const scene = (
-    <>
-      {extraNinjas.map((ninja, i) =>
-        <ColoredNinja ninja={ninja} key={i} />
-      )}
+    <group ref={sceneGroupRef}>
+      <group ref={ninjaGroupRef}>
+        {extraNinjas.map((ninja, i) =>
+          <ColoredNinja ninja={ninja} key={i} />
+        )}
+      </group>
       <Trampoline position={[0, 0, 0]} />
-    </>
+      <Floor position={[0, -1, 0]} />
+    </group>
   );
 
   const size = {
@@ -103,7 +140,7 @@ export function Sketch05(){
   ) : (
     <PerspectiveCamera
       makeDefault
-      position={[0, 0.5, 7]}
+      position={[0, 0.6, 7]}
       ref={e => {
         //console.log('persp',e);
         (cameraRef as any).current = e;
