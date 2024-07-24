@@ -37,10 +37,17 @@ async function loadBlendedImageAsDataUrl(layers: LayerDeclaration[]): Promise<st
   return URL.createObjectURL(blob);
 }
 
+const Cache = new Map<string,HTMLImageElement>();
+
 async function loadImageElement(src: string){
   return new Promise<HTMLImageElement>((resolve,reject) => {
+    const cachedImg = Cache.get(src);
+    if(cachedImg){
+      resolve(cachedImg);
+    }
     const img = new Image();
     img.onload = () => {
+      Cache.set(src,img);
       resolve(img);
     };
     img.onerror = (e) => {
