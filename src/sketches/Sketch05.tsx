@@ -3,8 +3,17 @@ import {  Debug, Physics, Triplet } from '@react-three/cannon'
 import { Environment, OrthographicCamera, PerspectiveCamera } from '@react-three/drei'
 import { Camera,  Vector3 } from 'three'
 import React, { createRef, useRef, useState } from 'react';
-import { Ninja } from '../entities/Ninja';
+import { ColoredNinja, NinjaDeclaration } from '../entities/Ninja';
 import { Trampoline } from '../entities/Trampoline';
+
+const z = 0;
+const starterNinjas: NinjaDeclaration[] = [
+  { position: [-1, 1.5, z], color: 'pink' },
+  { position: [0, 1, z], color: 'teal' , scale: 1.3},
+  { position: [1, 2, z], color: 'green', scale: 0.75 },
+  { position: [2, 1.5, z], color: 'blue', velocity: [-0.1, 0, 0] },
+  { position: [1, 1.5, z], color: 'black', scale: 1.6},
+];
 
 function mouseEventToWorldSpace(
   canvas: HTMLCanvasElement,
@@ -30,20 +39,22 @@ function mouseEventToWorldSpace(
 }
 
 export function Sketch05(){
-  const z = 0;
-  const [extraNinjas,setExtraNinjas] = React.useState<Triplet[]>([
-    [0,2,z]
-  ]);
+  const [extraNinjas,setExtraNinjas] = React.useState<NinjaDeclaration[]>(starterNinjas);
   const cameraRef = useRef<Camera>(null);
   const canvasRef = createRef<HTMLCanvasElement>();
   const [orthographic,setOrthographic] = React.useState(false);
   const [debug,setDebug] = useState(false);
+  const [environment,setEnvironment] = useState(true);
 
   React.useEffect(() => {
     const listener = (e: KeyboardEvent) => {
       switch(e.key.toLowerCase()){
         case "d": {
           setDebug(!debug);
+          break;
+        }
+        case "e": {
+          setEnvironment(!environment);
           break;
         }
         case "c": {
@@ -61,10 +72,8 @@ export function Sketch05(){
 
   const scene = (
     <>
-      <Ninja position={[-3, 3, z]} velocity={[0.5, 0, 0]} />
-      <Ninja position={[3, 1, z]} velocity={[-0.1, 0, 0]} />
-      {extraNinjas.map((position, i) =>
-        <Ninja position={position} key={i} />
+      {extraNinjas.map((ninja, i) =>
+        <ColoredNinja ninja={ninja} key={i} />
       )}
       <Trampoline position={[0, 0, 0]} />
     </>
@@ -116,15 +125,19 @@ export function Sketch05(){
         const canvas = (e.target as HTMLCanvasElement);
 
         const position = mouseEventToWorldSpace(canvas, camera, e, z);
-        setExtraNinjas([...extraNinjas, [position.x, position.y, position.z]]);
+        const positionTriple: Triplet = [position.x, position.y, position.z];
+        console.log({positionTriple});
+        setExtraNinjas([...extraNinjas, {
+          position: positionTriple,
+          color: 'red'
+        }]);
         //console.log({camera,position});
       }}
     >
       {camera}
-      <Environment preset="park" background={true} />
-      <directionalLight color={"white"} position={[0,20,0]}/>
-      <pointLight position={[0,0,20]} intensity={.5}/>
-
+      {environment && <Environment preset="park" background={true} />}
+      <directionalLight color={"white"} position={[0,20,0]} />
+      <pointLight position={[0,10,5]} intensity={.5}/>
 
       <Physics>
         {debug ? (

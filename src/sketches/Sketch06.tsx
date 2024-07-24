@@ -1,10 +1,10 @@
-import { allNinjaColors, NinjaImageElement } from "../entities/NinjaTexture";
+import NinjaTexture from "../entities/NinjaTexture";
 
 export function Sketch06(){
   return (
     <div className="flex flex-wrap gap-4">
-      {allNinjaColors.map(color => 
-        <NinjaImageElement key={color} color={color} />
+      {NinjaTexture.allNinjaColors.map(color => 
+        <NinjaTexture.NinjaImageElement key={color} color={color} />
       )}
     </div>
   );

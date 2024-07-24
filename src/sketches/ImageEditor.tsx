@@ -37,19 +37,23 @@ async function loadBlendedImageAsDataUrl(layers: LayerDeclaration[]): Promise<st
   return URL.createObjectURL(blob);
 }
 
-
-async function loadImageElements(src: string[]){
-  return Promise.all(src.map(url => new Promise<HTMLImageElement>((resolve,reject) => {
+async function loadImageElement(src: string){
+  return new Promise<HTMLImageElement>((resolve,reject) => {
     const img = new Image();
     img.onload = () => {
       resolve(img);
     };
     img.onerror = (e) => {
+      console.error('unable to load src:', src);
       console.error(e);
       reject();
     }
-    img.src = url;
-  })));
+    img.src = src;
+  });
+}
+
+async function loadImageElements(src: string[]){
+  return Promise.all(src.map(loadImageElement));
 }
 
 function LayeredImage({
@@ -74,6 +78,7 @@ function LayeredImage({
 
 export {
     loadBlendedImageAsDataUrl,
+    loadImageElement,
     loadImageElements,
     LayeredImage
 };
