@@ -63,7 +63,7 @@ export function ColoredNinja({
       }}
       visible={!!texture}
     >
-      <planeGeometry args={[s,s]}/>
+      <circleGeometry args={[s/2]}/>
       {texture && <meshStandardMaterial map={texture} transparent={true} side={2} /> }
     </mesh>
   );

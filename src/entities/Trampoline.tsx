@@ -30,9 +30,9 @@ export function Trampoline(props: any) {
     </mesh>
     <group>
       {Array(legCount).fill(undefined).map((_,i) => 
-        <group rotation={[0,(i / legCount)*2*Math.PI,0]}>
+        <group key={i}
+         rotation={[0,(i / legCount)*2*Math.PI,0]}>
           <mesh
-            key={i}
             position={[
               0,
               -(legHeight + surfaceThickness)/2,

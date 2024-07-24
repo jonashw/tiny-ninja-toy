@@ -19,17 +19,19 @@ export default function SketchGalleryViewer() {
   }
   return (
     <div>
-      <div className="flex justify-between items-center p-2 gap-2 [&>button]:flex-grow">
-        <Button onClick={() => go(sketches.prev())}>Prev</Button>
-        <span
-          style={{
-            cursor: 'pointer'
-          }}
-          onClick={() => {
-            navigate('/sketches');
-          }}
-        >{sketches.currentIndex + 1} of {sketches.items.length}</span>
-        <Button onClick={() => go(sketches.next())}>Next</Button>
+      <div className="left-0 right-0 top-0 fixed bg-white z-10">
+        <div className="flex justify-between items-center p-2 gap-2 [&>button]:flex-grow">
+          <Button onClick={() => go(sketches.prev())}>Prev</Button>
+          <span
+            style={{
+              cursor: 'pointer'
+            }}
+            onClick={() => {
+              navigate('/sketches');
+            }}
+          >{sketches.currentIndex + 1} of {sketches.items.length}</span>
+          <Button onClick={() => go(sketches.next())}>Next</Button>
+        </div>
       </div>
       <CurrentSketch/>
     </div>

@@ -1,11 +1,12 @@
 import { Canvas } from '@react-three/fiber'
 import {  Debug, Physics, Triplet } from '@react-three/cannon'
 import { Environment, OrthographicCamera, PerspectiveCamera } from '@react-three/drei'
-import { PerspectiveCamera as PerspectiveCameraImpl , Camera,  Group,  Vector3, Box3 } from 'three'
-import React, { createRef, useRef, useState } from 'react';
+import { PerspectiveCamera as PerspectiveCameraImpl , Camera,  Group,  Vector3, Box3, Object3DEventMap, Euler } from 'three'
+import React, { createRef, useCallback, useRef, useState } from 'react';
 import { ColoredNinja, NinjaDeclaration } from '../entities/Ninja';
 import { Trampoline } from '../entities/Trampoline';
 import { Floor } from '../entities/Floor';
+import { Button } from '../Button';
 
 const z = 2;
 const starterNinjas: NinjaDeclaration[] = [
@@ -15,6 +16,8 @@ const starterNinjas: NinjaDeclaration[] = [
   { position: [2, 1.5, z], color: 'blue', velocity: [-0.1, 0, 0] },
   { position: [1, 1.5, z], color: 'red', scale: 1.6},
 ];
+
+const defaultPerspectiveCameraPosition: Triplet = [0, 0.6, 7];
 
 function fitCameraToObjects( group:Group, camera:PerspectiveCameraImpl, margin: number = 1.2) {
   const box = new Box3().setFromObject( group );
@@ -58,8 +61,11 @@ function mouseEventToWorldSpace(
 
 }
 
+function withNewIds<T>(items: T[]): (T & {id: string})[]{
+  return items.map(i => ({...i,id: crypto.randomUUID()}));
+}
 export function Sketch05(){
-  const [extraNinjas,setExtraNinjas] = React.useState<NinjaDeclaration[]>(starterNinjas);
+  const [ninjas,setNinjas] = React.useState<(NinjaDeclaration & {id: string} )[]>(withNewIds(starterNinjas));
   const cameraRef = useRef<PerspectiveCameraImpl | Camera>(null);
   const sceneGroupRef = useRef<Group>(null);
   const ninjaGroupRef = useRef<Group>(null);
@@ -67,6 +73,66 @@ export function Sketch05(){
   const [orthographic,setOrthographic] = React.useState(false);
   const [debug,setDebug] = useState(false);
   const [environment,setEnvironment] = useState(true);
+  const [zoom, setZoom] = useState(1);
+  const [cameraPosition,setCameraPosition] = useState<Triplet>(defaultPerspectiveCameraPosition);
+  const [cameraRotation,setCameraRotation] = useState<Euler>(new Euler(0,0,0));
+
+  const tryResetCamera = useCallback(function tryResetCamera(){
+    console.log('try resetting camera...');
+    if(!cameraRef.current){
+      console.log('cannot reset camera because it is not ready yet');
+      return;
+    }
+    if(!('fov' in cameraRef.current)){
+      console.log('can only reset perspective cameras');
+      return;
+    }
+    const camera = cameraRef.current;
+    camera.position.set(...defaultPerspectiveCameraPosition);
+    setCameraRotation(new Euler(0,0,0));
+    setZoom(1);
+    setCameraPosition(defaultPerspectiveCameraPosition);
+  },[]);
+
+  const tryZoom = useCallback(function tryZoom(zoomDelta: number){
+    setZoom(zoom => {
+      const currentZoom = zoom;
+      const nextZoom = currentZoom + zoomDelta;
+      console.log({currentZoom,nextZoom});
+      return Math.max(0.5,nextZoom);
+    });
+  },[]);
+
+  const tryFitGroup = useCallback(function tryFitNinjas(
+    groupRef: React.RefObject<Group<Object3DEventMap>>,
+    margin: number
+  ){
+    console.log('try fit ninjas...');
+    if(!cameraRef.current || !groupRef.current){
+      console.log('cannot fit because camera/scene is not ready yet');
+      return;
+    }
+    if(!('fov' in cameraRef.current)){
+      console.log('can only fit for perspective cameras');
+      return;
+    }
+    console.log('ok');
+    fitCameraToObjects(groupRef.current, cameraRef.current, margin);
+  },[]);
+
+  const tryFitNinjas = useCallback(function tryFitNinjas(){
+    console.log('try fit ninjas...');
+    if(!cameraRef.current || !ninjaGroupRef.current){
+      console.log('cannot fit because camera/scene is not ready yet');
+      return;
+    }
+    if(!('fov' in cameraRef.current)){
+      console.log('can only fit for perspective cameras');
+      return;
+    }
+    console.log('ok');
+    fitCameraToObjects(ninjaGroupRef.current, cameraRef.current, 0.5);
+  },[]);
 
   React.useEffect(() => {
     const listener = (e: KeyboardEvent) => {
@@ -76,15 +142,7 @@ export function Sketch05(){
           break;
         }
         case "f": {
-          if(!cameraRef.current || !sceneGroupRef.current || !ninjaGroupRef.current){
-            console.log('cannot fit because camera/scene is not ready yet');
-            return;
-          }
-          if(!('fov' in cameraRef.current)){
-            console.log('can only fit for perspective cameras');
-            return;
-          }
-          fitCameraToObjects(ninjaGroupRef.current, cameraRef.current, 0.5);
+          tryFitNinjas();
           break;
         }
         case "e": {
@@ -103,17 +161,18 @@ export function Sketch05(){
     };
   },[orthographic, debug, environment]);
 
-
   const scene = (
-    <group ref={sceneGroupRef}>
-      <group ref={ninjaGroupRef}>
-        {extraNinjas.map((ninja, i) =>
-          <ColoredNinja ninja={ninja} key={i} />
-        )}
-      </group>
-      <Trampoline position={[0, 0, 0]} />
+    <>
       <Floor position={[0, -0.8, 0]} />
-    </group>
+      <group ref={sceneGroupRef}>
+        <group ref={ninjaGroupRef}>
+          {ninjas.map((ninja) =>
+            <ColoredNinja ninja={ninja} key={ninja.id} />
+          )}
+        </group>
+        <Trampoline position={[0, 0, 0]} />
+      </group>
+    </>
   );
 
   const size = {
@@ -129,7 +188,7 @@ export function Sketch05(){
       top={size.height / 2}
       bottom={-size.height / 2}
       near={-10}
-      far={10}
+      far={500}
       zoom={100}
       ref={e => {
         //console.log('ortho',e);
@@ -140,7 +199,9 @@ export function Sketch05(){
   ) : (
     <PerspectiveCamera
       makeDefault
-      position={[0, 0.6, 7]}
+      position={cameraPosition}
+      zoom={zoom}
+      rotation={cameraRotation}
       ref={e => {
         //console.log('persp',e);
         (cameraRef as any).current = e;
@@ -149,7 +210,32 @@ export function Sketch05(){
   );
 
   return (
-    <div style={{width:`${size.width}px`, height:`${size.height}px`}}>
+    <div
+      style={{
+        width:`${size.width}px`,
+        height:`${size.height}px`,
+        position:'relative'
+      }}
+    >
+      <div className="left-0 right-0 bottom-0 absolute bg-white z-10">
+        <div className="flex justify-around gap-2 p-2 flex-wrap">
+          <Button onClick={() => tryFitGroup(ninjaGroupRef,0.5)}>See all Ninjas</Button>
+          <Button onClick={() => tryResetCamera()}>Reset Camera</Button>
+          <Button onClick={() => tryZoom(-0.25)}>Zoom Out</Button>
+          <Button onClick={() => tryZoom( 0.25)}>Zoom In</Button>
+          <Button onClick={() => {
+            const camera = cameraRef.current;
+            if(!camera){
+              return;
+            }
+            if(!('fov' in camera)){
+              return;
+            }
+            camera.lookAt(new Vector3(0,0,0));
+          }}>LookAt(0,0,0)</Button>
+          <Button onClick={() => setNinjas(withNewIds)}>Reset Ninjas</Button>
+        </div>
+      </div>
     <Canvas
       flat
       shadows
@@ -163,12 +249,11 @@ export function Sketch05(){
 
         const position = mouseEventToWorldSpace(canvas, camera, e, z);
         const positionTriple: Triplet = [position.x, position.y, position.z];
-        console.log({positionTriple});
-        setExtraNinjas([...extraNinjas, {
+        setNinjas([...ninjas, {
           position: positionTriple,
-          color: 'black'
+          color: 'black',
+          id: crypto.randomUUID()
         }]);
-        //console.log({camera,position});
       }}
     >
       {camera}
