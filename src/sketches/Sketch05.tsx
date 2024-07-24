@@ -1,53 +1,10 @@
-import { Canvas, useLoader } from '@react-three/fiber'
-import {  Debug, Physics, Triplet, useCylinder, useSphere } from '@react-three/cannon'
-import { Edges, Environment, OrthographicCamera, PerspectiveCamera } from '@react-three/drei'
-import { Camera,  TextureLoader,  Vector3 } from 'three'
+import { Canvas } from '@react-three/fiber'
+import {  Debug, Physics, Triplet } from '@react-three/cannon'
+import { Environment, OrthographicCamera, PerspectiveCamera } from '@react-three/drei'
+import { Camera,  Vector3 } from 'three'
 import React, { createRef, useRef } from 'react';
-
-function Trampoline(props: any) {
-  const r = 5;
-  const args: [number,number,number,number] = [r, r, 0.05, 100];
-  const texture = useLoader(TextureLoader,'/texture/trampoline.png');
-  const [ref] = useCylinder(() => ({
-    material: {restitution:1},
-    ...props,
-    type:'Kinematic',
-    args
-  }))
-  
-  return <>
-    <mesh ref={ref as any} receiveShadow castShadow>
-      <Edges linewidth={2} threshold={15} color={"black"} />
-      <meshStandardMaterial  map={texture}/>
-      <cylinderGeometry args={args} />
-    </mesh>
-  </>;
-}
-
-function Ninja(props: any) {
-  const s = 0.5;
-  const [ref] = useSphere(() => ({
-    mass: 1, 
-    position: [0, 0, 0], ...props ,
-    material: {restitution:1},
-    args: [s/2,10]
-
-  }))
-  const texture = useLoader(TextureLoader,'/ninja.01-filled-transparent.png');
-  return (
-    <mesh
-      ref={ref as any}
-      castShadow
-      receiveShadow
-      onClick={e =>{
-        e.stopPropagation();
-      }}
-    >
-      <planeGeometry args={[s,s]}/>
-      <meshStandardMaterial  map={texture} transparent={true} side={2} />
-    </mesh>
-  )
-}
+import { Ninja } from '../entities/Ninja';
+import { Trampoline } from '../entities/Trampoline';
 
 function mouseEventToWorldSpace(
   canvas: HTMLCanvasElement,
