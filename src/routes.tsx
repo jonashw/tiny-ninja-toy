@@ -1,6 +1,7 @@
 import { RouteObject } from "react-router-dom";
-import Sketches from "./Sketches";
 import { App } from "./App";
+import SketchIndex from "./SketchIndex";
+import SketchGalleryViewer from "./SketchGalleryViewer";
 
 export const routes: RouteObject[] = [
   {
@@ -8,7 +9,11 @@ export const routes: RouteObject[] = [
     element: <App/>
   },
   {
-    path:'/sketches/:sketchIndex?',
-    element: <Sketches/>
+    path:'/sketches',
+    element: <SketchIndex/>
+  },
+  {
+    path:'/sketches/:sketchIndex',
+    element: <SketchGalleryViewer/>
   }
 ];
