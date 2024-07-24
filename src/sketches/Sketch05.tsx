@@ -10,9 +10,9 @@ const z = 0;
 const starterNinjas: NinjaDeclaration[] = [
   { position: [-1, 1.5, z], color: 'pink' },
   { position: [0, 1, z], color: 'teal' , scale: 1.3},
-  { position: [1, 2, z], color: 'green', scale: 0.75 },
+  { position: [1, 2, z], color: 'green', scale: 0.65 },
   { position: [2, 1.5, z], color: 'blue', velocity: [-0.1, 0, 0] },
-  { position: [1, 1.5, z], color: 'black', scale: 1.6},
+  { position: [1, 1.5, z], color: 'red', scale: 1.6},
 ];
 
 function mouseEventToWorldSpace(
@@ -129,7 +129,7 @@ export function Sketch05(){
         console.log({positionTriple});
         setExtraNinjas([...extraNinjas, {
           position: positionTriple,
-          color: 'red'
+          color: 'black'
         }]);
         //console.log({camera,position});
       }}
