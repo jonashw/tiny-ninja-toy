@@ -4,6 +4,7 @@ import { Sketch03 } from './Sketch03';
 import { Sketch04 } from './Sketch04';
 import { Sketch05 } from './Sketch05';
 import { Sketch06 } from './Sketch06';
+import { Sketch07 } from './Sketch07';
 
 export default [
   Sketch01,
@@ -12,4 +13,5 @@ export default [
   Sketch04,
   Sketch05,
   Sketch06,
+  Sketch07,
 ];
