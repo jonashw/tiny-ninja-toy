@@ -7,7 +7,7 @@ export default function SketchesIndex(){
             <h1 className="font-sans text-xl mb-2">Sketches ({allSketches.length})</h1>
             <div className="grid gap-2 py-2 *:py-10 flex-wrap grid-cols-3">
                 {allSketches.map((_, i) => (
-                    <Button to={`/sketches/${i}`}>
+                    <Button to={`/sketches/${i}`} key={i}>
                         {(i + 1).toString()}
                     </Button>
                 ))}
