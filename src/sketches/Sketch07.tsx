@@ -1,31 +1,8 @@
 import { OrbitControls, OrthographicCamera, Outlines, useTexture } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { createRef, useEffect, useState } from "react";
+import { createRef } from "react";
 import { Group, MirroredRepeatWrapping, Object3DEventMap } from "three";
-
-function useWindowSize(){
-  const [size,setSize] = useState({
-    width: window.innerWidth,
-    height: window.innerHeight
-  });
-  
-  useEffect(() => {
-    function listener(){
-      setSize({
-        width: window.innerWidth,
-        height: window.innerHeight
-      });
-    }
-
-    window.addEventListener('resize',listener);
-
-    return () => {//cleanup
-      window.removeEventListener('resize',listener);
-    };
-  },[]);
-
-  return size;
-}
+import { useWindowSize } from "./useWindowSize";
 
 function Waves({
   radius,
