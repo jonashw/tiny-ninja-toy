@@ -7,6 +7,7 @@ import { ColoredNinja, NinjaDeclaration } from '../entities/Ninja';
 import { Trampoline } from '../entities/Trampoline';
 import { Floor } from '../entities/Floor';
 import { Button } from '../Button';
+import { useWindowSize } from './useWindowSize';
 
 const z = 2;
 const starterNinjas: NinjaDeclaration[] = [
@@ -76,6 +77,7 @@ export function Sketch05(){
   const [zoom, setZoom] = useState(1);
   const [cameraPosition,setCameraPosition] = useState<Triplet>(defaultPerspectiveCameraPosition);
   const [cameraRotation,setCameraRotation] = useState<Euler>(new Euler(0,0,0));
+  const size = useWindowSize();
 
   const tryResetCamera = useCallback(function tryResetCamera(){
     console.log('try resetting camera...');
@@ -174,11 +176,6 @@ export function Sketch05(){
       </group>
     </>
   );
-
-  const size = {
-    width: window.innerWidth,
-    height: window.innerHeight
-  };
 
   const camera = orthographic ? (
     <OrthographicCamera
