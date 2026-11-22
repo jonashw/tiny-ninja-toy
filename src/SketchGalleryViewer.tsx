@@ -3,6 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import React from 'react';
 import allSketches from './sketches/allSketches';
 import { Button } from './Button';
+import { SpeedControls } from './SpeedControls';
+import { clickButton } from './speed';
 
 export default function SketchGalleryViewer() {
   const params = useParams();
@@ -31,6 +33,13 @@ export default function SketchGalleryViewer() {
             }}
           >{sketches.currentIndex + 1} of {sketches.items.length}</span>
           <Button onClick={() => go(sketches.next())}>Next</Button>
+          <SpeedControls
+            spec={() => ({
+              // five seconds on each sketch; seven Nexts come back round to where it started
+              seconds: 40,
+              steps: allSketches.map((_, i) => ({ at: 5 * (i + 1), mark: "next sketch", run: () => clickButton('Next') })),
+            })}
+          />
         </div>
       </div>
       <CurrentSketch/>

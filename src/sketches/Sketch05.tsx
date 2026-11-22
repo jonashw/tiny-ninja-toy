@@ -8,6 +8,10 @@ import { Trampoline } from '../entities/Trampoline';
 import { Floor } from '../entities/Floor';
 import { Button } from '../Button';
 import { useWindowSize } from './useWindowSize';
+import { useLocation } from 'react-router-dom';
+import { PerfSpec } from '../vendor/hp-perf.js';
+import { SpeedControls } from '../SpeedControls';
+import { clickButton, press, tapCanvas } from '../speed';
 
 const z = 2;
 const starterNinjas: NinjaDeclaration[] = [
@@ -78,6 +82,39 @@ export function Sketch05(){
   const [cameraPosition,setCameraPosition] = useState<Triplet>(defaultPerspectiveCameraPosition);
   const [cameraRotation,setCameraRotation] = useState<Euler>(new Euler(0,0,0));
   const size = useWindowSize();
+  const onHomePage = useLocation().pathname === '/';
+  // The speed run: adds ninjas, moves the camera, flips each view on and back off, then puts the ninjas and
+  // the camera back as they were.
+  const speedRun = (): PerfSpec => {
+    const saved = { ninjas, zoom, cameraPosition, cameraRotation };
+    return {
+      seconds: 40,
+      steps: [
+        { at: 2, mark: "add a ninja", run: () => tapCanvas(0.3, 0.3) },
+        { at: 3, mark: "add a ninja", run: () => tapCanvas(0.5, 0.2) },
+        { at: 4, mark: "add a ninja", run: () => tapCanvas(0.7, 0.3) },
+        { at: 6, mark: "see all ninjas", run: () => clickButton('See all Ninjas') },
+        { at: 9, mark: "zoom out", run: () => clickButton('Zoom Out') },
+        { at: 11, mark: "zoom out", run: () => clickButton('Zoom Out') },
+        { at: 13, mark: "zoom in", run: () => clickButton('Zoom In') },
+        { at: 15, mark: "zoom in", run: () => clickButton('Zoom In') },
+        { at: 17, mark: "park backdrop off", run: () => press('e') },
+        { at: 21, mark: "park backdrop on", run: () => press('e') },
+        { at: 23, mark: "flat camera", run: () => press('c') },
+        { at: 28, mark: "perspective camera", run: () => press('c') },
+        { at: 30, mark: "physics debug on", run: () => press('d') },
+        { at: 34, mark: "physics debug off", run: () => press('d') },
+        { at: 36, mark: "reset ninjas", run: () => clickButton('Reset Ninjas') },
+        { at: 38, mark: "reset camera", run: () => clickButton('Reset Camera') },
+      ],
+      done: () => {
+        setNinjas(saved.ninjas);
+        setZoom(saved.zoom);
+        setCameraPosition(saved.cameraPosition);
+        setCameraRotation(saved.cameraRotation);
+      },
+    };
+  };
 
   const tryResetCamera = useCallback(function tryResetCamera(){
     console.log('try resetting camera...');
@@ -231,6 +268,7 @@ export function Sketch05(){
             camera.lookAt(new Vector3(0,0,0));
           }}>LookAt(0,0,0)</Button>
           <Button onClick={() => setNinjas(withNewIds)}>Reset Ninjas</Button>
+          {onHomePage && <SpeedControls spec={speedRun} />}
         </div>
       </div>
     <Canvas
